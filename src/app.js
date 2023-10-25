@@ -3,13 +3,14 @@ const todos = [] ;
 const todoInput = document.querySelector(".todo-input");
 const todoForm = document.querySelector(".todo-form");
 const todoList = document.querySelector(".todolist");
+const selectFilter = document.querySelector(".filter-todos");
 
 todoForm.addEventListener("submit", addNewTodo);
+selectFilter.addEventListener(("change"),filterTodos);
 
 function addNewTodo(e){
     e.preventDefault();
-
-    // if(!todoInput.value) return null ;
+    if(!todoInput.value) return null ;
 
     const newTodo = {
         id : Date.now(),
@@ -18,8 +19,10 @@ function addNewTodo(e){
         isCompleted : false,
     };
     todos.push(newTodo);
-
-// create todos on DOM :
+    createTodos(todos);
+}
+function createTodos(todos){
+    // create todos on DOM :
 let result = " ";
 todos.forEach((todo)=>{
     result += `
@@ -27,7 +30,7 @@ todos.forEach((todo)=>{
         <p class="todo__title grow">${todo.title}</p>
         <span class="todo__createdAt">${new Date(todo.createdAt).toLocaleDateString("fa-IR")}</span>
         <button data-todo-id=${todo.id}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="todo__check fill-green-500 w-6 h-6">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="todo__check fill-green-500 w-6 h-6 mx-1.5">
                 <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
             </svg>
                             
@@ -39,7 +42,30 @@ todos.forEach((todo)=>{
         </button>
     </li>
   `
+});
   todoList.innerHTML = result ;
   todoInput.value = " ";
-})
 }
+
+function filterTodos (e){
+    const filter = e.target.value;
+    switch (filter){
+        case "all" :{
+            createTodos(todos);
+            break;
+        }
+        case "completed" : {
+            const filteredTodos = todos.filter((t)=> t.isCompleted);
+            createTodos(filteredTodos);
+            break;
+        }
+        case "uncompleted" : {
+            const filteredTodos = todos.filter((t)=> !t.isCompleted);
+            createTodos(filteredTodos);
+            break;
+        }
+        default :
+            createTodos(todos);
+    }
+}
+createTodos(todos)
