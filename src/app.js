@@ -27,7 +27,7 @@ let result = "";
 todos.forEach((todo)=>{
     result += `
     <li class="todo flex bg-slate-50 rounded-md p-1 mb-1 justify-between items-center w-80 h-8">
-        <p class="todo__title grow">${todo.title}</p>
+        <p class="todo__title grow ${todo.isCompleted && "completed"}">${todo.title}</p>
         <span class="todo__createdAt">${new Date(todo.createdAt).toLocaleDateString("fa-IR")}</span>
         <button class="todo__check" data-todo-id=${todo.id}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class=" fill-green-500 w-6 h-6 mx-1.5">
@@ -48,6 +48,9 @@ todos.forEach((todo)=>{
 
 const removeBtns = [...document.querySelectorAll(".todo__remove")];
 removeBtns.forEach((btn)=> btn.addEventListener("click",removeTodo));
+
+const checkBtns = [...document.querySelectorAll(".todo__check")];
+checkBtns.forEach((btn)=> btn.addEventListener("click",checkTodo));
 }
 
 
@@ -57,6 +60,13 @@ function removeTodo(e){
     const todoId = Number(e.currentTarget.dataset.todoId) ; 
     todos = todos.filter((t)=> t.id !== todoId);
     // console.log(todos);
+    createTodos(todos);
+}
+
+function checkTodo(e){
+    const todoId = Number(e.currentTarget.dataset.todoId) ; 
+    const todo = todos.find((t)=> t.id == todoId);
+    todo.isCompleted = !todo.isCompleted;
     createTodos(todos);
 }
 
